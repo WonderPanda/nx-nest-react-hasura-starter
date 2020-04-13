@@ -23,18 +23,23 @@
     "update": "nx migrate latest",
     "workspace-schematic": "nx workspace-schematic",
     "dep-graph": "nx dep-graph",
-    "help": "nx help"
+    "help": "nx help",
+    "hasura:console": "export $(cat .env | xargs) && hasura console --project ./hasura --admin-secret ${HASURA_GRAPHQL_ADMIN_SECRET}",
+    "hasura:migrate": "export $(cat .env | xargs) && hasura migrate apply --project ./hasura --admin-secret ${HASURA_GRAPHQL_ADMIN_SECRET}"
   },
   "private": true,
   "dependencies": {},
   "devDependencies": {
+    "@nrwl/nest": "^9.2.2",
+    "@nrwl/react": "^9.2.2",
     "@nrwl/workspace": "9.2.2",
     "@types/node": "~8.9.4",
-    "dotenv": "6.2.0",
+    "dotenv": "^8.2.0",
+    "eslint": "6.8.0",
+    "hasura-cli": "1.2.0-beta.3",
+    "prettier": "1.19.1",
     "ts-node": "~7.0.0",
     "tslint": "~6.0.0",
-    "eslint": "6.8.0",
-    "typescript": "~3.8.3",
-    "prettier": "1.19.1"
+    "typescript": "~3.8.3"
   }
 }

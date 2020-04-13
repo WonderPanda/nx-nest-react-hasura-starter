@@ -1,0 +1,45 @@
+version: '3.6'
+services:
+  postgres:
+    env_file: .env
+    image: postgres:12
+    ports:
+      - '${DB_HOST_PORT}:5432'
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  metabase:
+    env_file: .env
+    image: metabase/metabase
+    ports:
+      - '${METABASE_PORT}:3000'
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: metabase
+      MB_DB_PORT: 5432
+      MB_DB_USER: postgres
+      MB_DB_PASS: password
+      MB_DB_HOST: postgres
+
+  graphql-engine:
+    env_file: .env
+    image: hasura/graphql-engine:v1.2.0-beta.3
+    ports:
+      - '${HASURA_HOST_PORT}:8080'
+    depends_on:
+      - 'postgres'
+    restart: always
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:password@postgres:5432/postgres
+      HASURA_GRAPHQL_ENABLE_CONSOLE: 'true' # set to "false" to disable console
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      HASURA_GRAPHQL_JWT_SECRET: '{"type":"HS256", "key": "3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R"}'
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
+      NEST_EVENT_WEBHOOK_ENDPOINT: ${NEST_EVENT_WEBHOOK_ENDPOINT}
+
+volumes:
+  db_data:
